@@ -30,14 +30,9 @@ else:
     plot_title = args.title
 
 line_width = args.line_width
-#show_data_points = False
-#show_data_points = True
 
 # Plot configutation section ##################################################
 
-#data_line_color = "red"
-#data_points_color = "blue"
-#color_index = 0
 #colors = [name for name in named.__all__]
 colors = ["red", "blue", "green", "yellow", "purple", "black"]
 
@@ -58,22 +53,18 @@ with open(wave_input_file) as file:
         if (line_index >= header_lines):
             match.append([float(num) for num in line.strip().split()])
         elif (line_index == 1):
-            #signals_list = re.split(r"XVAL (.*?)\:", line)[1::]
-            #signals_list.insert(0, "x_axis")
             signals_list = line.split()
-            print(signals_list)
         line_index += 1
 
 table = pd.DataFrame(columns = signals_list, data = match)
-print(table)
 
 output_file(wave_output_file)
 p = figure(title = plot_title)
 
 for signal, data_color in zip(signals_list[1::], colors):
-    p.line(table[signals_list[0]], table[signal], legend = signal, line_width = line_width, color = data_color)
-    #color_index += 1
+    p.line(table[signals_list[0]], table[signal], legend = signal, line_width = line_width, color = data_color, muted_color = data_color, muted_alpha = 0.1)
     if (args.show_data_points):
-        p.circle(table[signals_list[0]], table[signal], color = data_color)
+        p.circle(table[signals_list[0]], table[signal], color = data_color, alpha = 0.4, muted_color = data_color, muted_alpha = 0.2)
 
+p.legend.click_policy = "mute"
 show(p)

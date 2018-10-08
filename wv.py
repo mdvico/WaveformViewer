@@ -67,7 +67,7 @@ with open(wave_input_file) as file:
 table = pd.DataFrame(columns = signals_list, data = match)
 print(table)
 
-output_file("{}.html".format(wave_output_file))
+output_file(wave_output_file)
 p = figure(title = plot_title)
 
 for signal, data_color in zip(signals_list[1::], colors):

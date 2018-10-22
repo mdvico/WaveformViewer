@@ -10,8 +10,8 @@ You will need:
 - The `selenium` library for PNG export (`pip3 install selenium --user`)
 
 If you have problems related to `phantomjs` try the following:
-- Install npm (`apt install npm`)
-- Install phantomjs-prebuilt (npm install phantomjs-prebuilt)
+- Install `npm` (`apt install npm`)
+- Install `phantomjs-prebuilt` (`npm install phantomjs-prebuilt`)
 
 ## Usage
 1. Edit the `wp.py` file configuration section to point to the data file, change the title, etc.
@@ -26,7 +26,7 @@ If you have problems related to `phantomjs` try the following:
 - [ ] Add the option of sourcing a local configuration file to have a consistent format for different plots.
 - [ ] Add argument to change the axis labels.
 - [ ] Add option to control the DPI output for the PNG output file.
-- [ ] Add argument to control the axis ticks, log, db20, etc.
+- [ ] Add argument to control the axis ticks to db20.
 
 ## DONE
 - [x] Use pandas dataframe to manipulate the data.
@@ -36,3 +36,4 @@ If you have problems related to `phantomjs` try the following:
 - [x] Add argument to ask for an PNG output file.
 - [x] Add argument to ask for an SVG output file.
 - [x] Add argument to avoid showing the output, just to create the output file.
+- [x] Add argument to control the axis ticks to log.

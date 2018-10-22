@@ -15,6 +15,8 @@ parser.add_argument("-o", "--output_file", type = str, dest = "wave_output_file"
 parser.add_argument("-t", "--title", type = str, dest = "title", help = "Specifies the output plot title.")
 parser.add_argument("-dp", "--show_data_points", action = "store_true", default = False, help = "Show data point over the plot-line.")
 parser.add_argument("-lw", "--line_width", type = int, dest = "line_width", choices = range(1,7), default = 1, help = "Specifies the data line width. Affects all the lines.")
+parser.add_argument("--x_axis_log", action = "store_true", default = False, help = "Changes the x axis to log scale.")
+parser.add_argument("--y_axis_log", action = "store_true", default = False, help = "Changes the y axis to log scale.")
 parser.add_argument("--save_svg", action = "store_true", default = False, help = "Saves the plot in a svg file.")
 parser.add_argument("--save_png", action = "store_true", default = False, help = "Saves the plot in a png file.")
 parser.add_argument("--no_output", action = "store_true", default = False, help = "Does not create the HTML output file and does not open the browser to show it.")
@@ -31,6 +33,16 @@ else:
     plot_title = args.title
 
 line_width = args.line_width
+
+if (args.x_axis_log):
+    x_axis_type = "log"
+else:
+    x_axis_type = "linear"
+
+if (args.y_axis_log):
+    y_axis_type = "log"
+else:
+    y_axis_type = "linear"
 
 # Plot configutation section ##################################################
 
@@ -60,7 +72,7 @@ with open(wave_input_file) as file:
 table = pd.DataFrame(columns = signals_list, data = match)
 
 output_file(wave_output_file + ".html")
-p = figure(title = plot_title)
+p = figure(title = plot_title, x_axis_type = x_axis_type, y_axis_type = y_axis_type)
 
 for signal, data_color in zip(signals_list[1::], colors):
     p.line(table[signals_list[0]], table[signal], legend = signal, line_width = line_width, color = data_color, muted_color = data_color, muted_alpha = 0.1)

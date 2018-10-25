@@ -14,8 +14,15 @@ If you have problems related to `phantomjs` try the following:
 - Install `phantomjs-prebuilt` (`npm install phantomjs-prebuilt`)
 
 ## Usage
-1. Edit the `wp.py` file configuration section to point to the data file, change the title, etc.
-2. In a terminal, execute `python3 wv.py` or `./wv.py` (if you changed the file to be executable).
+- In a terminal, execute `wp.py` providing, at least, the required arguments (to see them see the help executing `wv.py --help`) to point to the data file, change the title, etc.
+
+### Examples
+1. In a terminal, execute `python3 wv.py` or `./wv.py` (if you changed the file to be executable). It will show you the help section.
+2. `wv -i <data_table>` creates an HTML file with the plot for the given `data_table` and opens it in your default internet browser. Since no name for the output file is provided the same as the input is used.
+3. `wv -i <data_table> -o <image_from_data_table>` same as before but now it saves the HTML file by the name `image_from_data_table.html`.
+4. `wv -i <data_table> -o <image_from_data_table> -dp` same as before but now it saves the HTML file by the name `image_from_data_table.html`. The data points (actual simulated/calculated values) are also shown.
+5. `wv -i <data_table> -o <image_from_data_table> -dp -lw 2` same as before but changing the lines width.
+6. `wv -i <data_table> -o <image_from_data_table> -dp -lw 2 --no_output --save_png` same as the previous one. The HTML file is not created, and also not shown. Finally a PNG file is created.
 
 ## TODO
 - [ ] Add support for batch file processing.
@@ -24,7 +31,6 @@ If you have problems related to `phantomjs` try the following:
 - [ ] Add some sort of verbosity.
 - [ ] Add some sort of debug capability.
 - [ ] Add the option of sourcing a local configuration file to have a consistent format for different plots.
-- [ ] Add argument to change the axis labels.
 - [ ] Add option to control the DPI output for the PNG output file.
 - [ ] Add argument to control the axis ticks to db20.
 
@@ -37,3 +43,4 @@ If you have problems related to `phantomjs` try the following:
 - [x] Add argument to ask for an SVG output file.
 - [x] Add argument to avoid showing the output, just to create the output file.
 - [x] Add argument to control the axis ticks to log.
+- [x] Add argument to change the axis labels.

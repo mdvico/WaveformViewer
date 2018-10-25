@@ -14,6 +14,8 @@ parser = argparse.ArgumentParser(description = "Creates an HTML file containing 
 parser.add_argument("-i", "--input_file", type = str, dest = "wave_input_file", required = True, help = "Specifies the input waveform file in text table format.")
 parser.add_argument("-o", "--output_file", type = str, dest = "wave_output_file", help = "Specifies the output plot file.")
 parser.add_argument("-t", "--title", type = str, dest = "title", help = "Specifies the output plot title.")
+parser.add_argument("-xl", "--x_label", type = str, dest = "x_axis_label", help = "Specifies the label for the x axis.")
+parser.add_argument("-yl", "--y_label", type = str, dest = "y_axis_label", help = "Specifies the label for the y axis.")
 parser.add_argument("-dp", "--show_data_points", action = "store_true", default = False, help = "Show data point over the plot-line.")
 parser.add_argument("-lw", "--line_width", type = int, dest = "line_width", choices = range(1,7), default = 1, help = "Specifies the data line width. Affects all the lines.")
 parser.add_argument("--x_axis_log", action = "store_true", default = False, help = "Changes the x axis to log scale.")
@@ -26,7 +28,13 @@ args = parser.parse_args()
 # Data configutation section ##################################################
 
 wave_input_file = args.wave_input_file
-wave_output_file = args.wave_output_file
+
+if (args.wave_output_file == None):
+    wave_output_file = wave_input_file
+else:
+    wave_output_file = args.wave_output_file
+
+# Plot configutation section ##################################################
 
 if (args.title == None):
     _, plot_title = os.path.split(args.wave_input_file)
@@ -45,7 +53,8 @@ if (args.y_axis_log):
 else:
     y_axis_type = "linear"
 
-# Plot configutation section ##################################################
+x_axis_label = args.x_axis_label
+y_axis_label = args.y_axis_label
 
 #colors = [name for name in named.__all__]
 colors = ["red", "blue", "green", "yellow", "purple", "black"]
@@ -73,7 +82,7 @@ with open(wave_input_file) as file:
 table = pd.DataFrame(columns = signals_list, data = match)
 
 output_file(wave_output_file + ".html")
-p = figure(title = plot_title, x_axis_type = x_axis_type, y_axis_type = y_axis_type, toolbar_location = "above")
+p = figure(title = plot_title, x_axis_label = x_axis_label, y_axis_label = y_axis_label, x_axis_type = x_axis_type, y_axis_type = y_axis_type, toolbar_location = "above")
 p.legend.background_fill_alpha = 1
 
 legends = []
@@ -92,7 +101,7 @@ p.add_layout(legend, 'right')
 if (args.save_png):
     p.toolbar_location = None
     export_png(p, filename = wave_output_file + ".png")
-    p.toolbar_location = "right"
+    p.toolbar_location = "above"
 if (args.save_svg):
     p.output_backend = "svg"
     export_svgs(p, filename = wave_output_file + ".svg")

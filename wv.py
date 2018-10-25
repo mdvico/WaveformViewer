@@ -5,6 +5,7 @@ import os
 import re
 import pandas as pd
 from bokeh.plotting import figure, output_file, show
+from bokeh.models import Legend
 from bokeh.colors import named
 from bokeh.io import export_png
 from bokeh.io import export_svgs
@@ -72,14 +73,21 @@ with open(wave_input_file) as file:
 table = pd.DataFrame(columns = signals_list, data = match)
 
 output_file(wave_output_file + ".html")
-p = figure(title = plot_title, x_axis_type = x_axis_type, y_axis_type = y_axis_type)
+p = figure(title = plot_title, x_axis_type = x_axis_type, y_axis_type = y_axis_type, toolbar_location = "above")
+p.legend.background_fill_alpha = 1
+
+legends = []
 
 for signal, data_color in zip(signals_list[1::], colors):
-    p.line(table[signals_list[0]], table[signal], legend = signal, line_width = line_width, color = data_color, muted_color = data_color, muted_alpha = 0.1)
+    #obj = p.line(table[signals_list[0]], table[signal], legend = signal, line_width = line_width, color = data_color, muted_color = data_color, muted_alpha = 0.1)
+    obj = p.line(table[signals_list[0]], table[signal], line_width = line_width, color = data_color, muted_color = data_color, muted_alpha = 0.1)
+    legends.append((signal, [obj]))
     if (args.show_data_points):
         p.circle(table[signals_list[0]], table[signal], color = data_color, alpha = 0.4, muted_color = data_color, muted_alpha = 0.2)
 
-p.legend.click_policy = "mute"
+legend = Legend(items=legends, location=(10, 0))
+legend.click_policy = "mute"
+p.add_layout(legend, 'right')
 
 if (args.save_png):
     p.toolbar_location = None

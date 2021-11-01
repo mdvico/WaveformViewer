@@ -4,6 +4,7 @@ Waveform viewer for Synopsys CustomCompiler, text table format, simulation data
 ## Before usage
 You will need:
 - Python 3
+- The `matplotlib` ploting library (default backend) (`pip3 install matplotlib --user`)
 - The `bokeh` ploting library (`pip3 install bokeh --user`)
 - The `pandas` library (`pip3 install pandas --user`)
 - The `pillow` library for PNG export (`pip3 install pillow --user`)

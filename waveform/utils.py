@@ -2,18 +2,32 @@
 # from bokeh.colors import name
 # from bokeh.models import Legend, LabelSet
 # from bokeh.plotting import figure, output_file, show
-from matplotlib import pyplot as mplt
-from bokeh import plotting as bplt
 
 
 def create_figure(backend="matplotlib", **kwargs):
-    print(kwargs.items())
     if (backend == "matplotlib"):
-        # figure = mplt.figure()
+        import matplotlib as mpl
+        from matplotlib import pyplot as mplt
+
+        # mpl.rcParams["font.family"] = "Metropolis"
+        mpl.rcParams["font.size"] = 15
+        mpl.rcParams["axes.linewidth"] = 2
+
         px = 1/96
-        figure, axes = mplt.subplots(figsize=(kwargs["plot_width"]*px, kwargs["plot_height"]*px))
-        # figure.tight_layout(pad=5)
-        axes.grid(True)
+        figure, axes = mplt.subplots(figsize=(kwargs["plot_width"]*px, kwargs["plot_height"]*px), constrained_layout=True)
+
+        axes.spines["right"].set_visible(False)
+        axes.spines["top"].set_visible(False)
+        axes.xaxis.set_tick_params(which="major", size=10, width=2,
+                                   direction="in")
+        axes.xaxis.set_tick_params(which="minor", size=7, width=2,
+                                   direction="in")
+        axes.yaxis.set_tick_params(which="major", size=10, width=2,
+                                   direction="in")
+        axes.yaxis.set_tick_params(which="minor", size=7, width=2,
+                                   direction="in")
+
+        # axes.grid(True)
         axes.set_axisbelow(True)
         axes.set_title(kwargs["title"])
         axes.set_xlabel(kwargs["x_axis_label"], fontsize=kwargs["x_axis_label_size"])
@@ -30,6 +44,8 @@ def create_figure(backend="matplotlib", **kwargs):
             axes.ticklabel_format(axis="both", style="sci")
 
     elif (backend == "bokeh"):
+        from bokeh import plotting as bplt
+
         figure = bplt.figure()
         axes = None
         # p.left[0].formatter.use_scientific = False
@@ -46,8 +62,6 @@ def add_plot(axes, type, x, y, **kwargs):
                   linewidth=kwargs["line_width"],
                   linestyle=kwargs["line_style"],
                   label=kwargs["legend_label"])
-        # print(f"{kwargs['legend_label']=}")
-        # axes.set_label(kwargs["legend_label"])
         if (kwargs["legend_label"] is not None):
             axes.legend()
     elif (type == "circle"):

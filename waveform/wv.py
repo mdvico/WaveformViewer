@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/opt/homebrew/bin/python3
 
 import argparse
 from pathlib import Path
@@ -71,6 +71,30 @@ parser.add_argument("--no_output", action="store_true", default=False,
 parser.add_argument("--regression", type=str, choices=regression_types,
                     default=None, help="Add the specified regression type to \
                             the plot.")
+parser.add_argument("-ia", "--input_above", type=str, dest="wave_input_above",
+                    default=None, \
+                    required=False, help="Specifies the input waveform file \
+                            for the above confidence band in text table \
+                            format.")
+parser.add_argument("-ib", "--input_below", type=str, dest="wave_input_below",
+                    default=None, \
+                    required=False, help="Specifies the input waveform file \
+                            for the below confidence band in text table \
+                            format.")
+parser.add_argument("-s", "--signal", type=str, dest="signal",
+                    default=None, required=False, help="Specifies the \
+                            input waveform name for the main plot in text \
+                            table format.")
+parser.add_argument("-sa", "--signal_above", type=str, dest="signal_above",
+                    default=None, \
+                    required=False, help="Specifies the input waveform name \
+                            for the above confidence band in text table \
+                            format.")
+parser.add_argument("-sb", "--signal_below", type=str, dest="signal_below",
+                    default=None, \
+                    required=False, help="Specifies the input waveform name \
+                            for the below confidence band in text table \
+                            format.")
 parser.add_argument("-b", "--backend", type=str, choices=plotting_backends,
                     dest="backend", default=plotting_backends[0],
                     help="Selects the backend library to create the plot.")
@@ -79,6 +103,17 @@ args = parser.parse_args()
 # Data configuration section ##################################################
 
 wave_input_file = Path(args.wave_input_file)
+
+if (args.wave_input_above is not None) and (Path(args.wave_input_above).is_file()):
+    wave_input_above = Path(args.wave_input_above)
+    table_above = wave_io.load(wave_input_above, header=args.header_index, sep=args.sep)
+    x_above = table_above[table_above.columns[0]]
+
+
+if (args.wave_input_below is not None) and (Path(args.wave_input_below).is_file()):
+    wave_input_below = Path(args.wave_input_below)
+    table_below = wave_io.load(wave_input_below, header=args.header_index, sep=args.sep)
+    x_below = table_below[table_below.columns[0]]
 
 if args.wave_output_file is None:
     wave_output_file = wave_input_file
@@ -97,6 +132,13 @@ colors = ["red", "blue", "green", "yellow", "purple", "black"]
 #  0.000E+00  1.986E+01 -0.000E+00
 
 table = wave_io.load(wave_input_file, header=args.header_index, sep=args.sep)
+print(wave_output_file)
+print(table)
+print()
+print()
+print()
+print()
+print()
 
 # output_file(str(wave_output_file.parent / (wave_output_file.stem + ".html")))
 p, ax = utils.create_figure(title=args.title,
@@ -121,7 +163,16 @@ p, ax = utils.create_figure(title=args.title,
 legends = []
 
 x = table[table.columns[0]]
-for signal, data_color in zip(table.columns[1::], colors):
+print(x)
+
+signals = []
+if args.signal is not None:
+    if args.signal in table.columns.to_list():
+        signals.append("".join(args.signal))
+else:
+    signals = table.columns[1::]
+
+for signal, data_color in zip(signals, colors):
     y = table[signal]
     if args.show_data_points:
         utils.add_plot(ax, "circle", x, y,
@@ -139,6 +190,7 @@ for signal, data_color in zip(table.columns[1::], colors):
                                  line_width=args.line_width,
                                  line_style="-",
                                  color=data_color,
+                                 alpha=1,
                                  muted_color=data_color,
                                  muted_alpha=0.1)
         else:
@@ -147,6 +199,7 @@ for signal, data_color in zip(table.columns[1::], colors):
                                  line_width=args.line_width,
                                  line_style="-",
                                  color=data_color,
+                                 alpha=1,
                                  muted_color=data_color,
                                  muted_alpha=0.1)
             # obj = p.line(x, y,
@@ -158,7 +211,12 @@ for signal, data_color in zip(table.columns[1::], colors):
 
     if args.regression is not None:
         model = regressions.cuadratic(x, y)
-        polyline = np.linspace(0.9*min(x), 1.1*max(x), 10*len(x))
+        polyline = np.linspace(min(x) - abs(min(x))*0.1 , max(x) + abs(max(x))*0.1, 10*len(x))
+        print(f"{x=}")
+        print(f"{min(x)=}")
+        print(f"{max(x)=}")
+        print(f"{len(x)=}")
+        print(polyline)
         utils.add_plot(ax, "line", polyline, model(polyline),
                        legend_label=signal,
                        color=data_color,
@@ -167,6 +225,24 @@ for signal, data_color in zip(table.columns[1::], colors):
                        line_style="--",
                        alpha=0.5,
                        muted_alpha=0.1)
+
+    if args.wave_input_above is not None: 
+        utils.add_plot(ax, "band_above", x, y, above=table_above[args.signal_above], \
+                line_width=args.line_width,
+                line_style="-",
+                legend_label=signal,
+                color=data_color,
+                alpha=0.5,
+                )
+
+    if args.wave_input_below is not None: 
+        utils.add_plot(ax, "band_below", x, y, below=table_below[args.signal_below], \
+                line_width=args.line_width,
+                line_style="-",
+                legend_label=signal,
+                color=data_color,
+                alpha=0.5,
+                )
 
 # Integrate
 # legend = Legend(items=legends, location=(10, 0))
@@ -185,7 +261,7 @@ if args.save_svg:
     wave_io.save_figure(p, filename=str(wave_output_file.parent / (wave_output_file.stem)), type="svg")
 
 if not args.no_output:
-    show(p)
+    p.show()
 
 
 # Flow structure

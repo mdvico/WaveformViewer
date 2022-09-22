@@ -58,13 +58,33 @@ def create_figure(backend="matplotlib", **kwargs):
 def add_plot(axes, type, x, y, **kwargs):
     if (type == "line"):
         axes.plot(x, y,
-                  color=kwargs["color"],
-                  linewidth=kwargs["line_width"],
-                  linestyle=kwargs["line_style"],
-                  label=kwargs["legend_label"])
+                color=kwargs["color"],
+                linewidth=kwargs["line_width"],
+                linestyle=kwargs["line_style"],
+                label=kwargs["legend_label"],
+                alpha=kwargs["alpha"])
         if (kwargs["legend_label"] is not None):
             axes.legend()
     elif (type == "circle"):
         axes.scatter(x, y,
-                     color=kwargs["color"],
-                     label=kwargs["legend_label"])
+                color=kwargs["color"],
+                label=kwargs["legend_label"],
+                alpha=kwargs["alpha"])
+    elif (type == "band_above"):
+        axes.fill_between(x, y, kwargs["above"],
+                color=kwargs["color"],
+                linewidth=kwargs["line_width"],
+                linestyle=kwargs["line_style"],
+                label=kwargs["legend_label"],
+                alpha=kwargs["alpha"])
+    elif (type == "band_below"):
+        axes.fill_between(x, y, kwargs["below"],
+                color=kwargs["color"],
+                linewidth=kwargs["line_width"],
+                linestyle=kwargs["line_style"],
+                label=kwargs["legend_label"],
+                alpha=kwargs["alpha"])
+
+    else:
+        print(f"There was no valid plot available with {type=} name")
+        return axes

@@ -13,6 +13,8 @@ def create_figure(backend="matplotlib", **kwargs):
         mpl.rcParams["font.size"] = 15
         mpl.rcParams["axes.linewidth"] = 2
 
+        # mplt.style.use(["science", "grid"])
+
         px = 1/96
         figure, axes = mplt.subplots(figsize=(kwargs["plot_width"]*px, kwargs["plot_height"]*px), constrained_layout=True)
 
@@ -27,7 +29,7 @@ def create_figure(backend="matplotlib", **kwargs):
         axes.yaxis.set_tick_params(which="minor", size=7, width=2,
                                    direction="in")
 
-        # axes.grid(True)
+        axes.grid(visible = True, which = "both", axis = "both", linestyle = "--", alpha = 0.6)
         axes.set_axisbelow(True)
         axes.set_title(kwargs["title"])
         axes.set_xlabel(kwargs["x_axis_label"], fontsize=kwargs["x_axis_label_size"])
